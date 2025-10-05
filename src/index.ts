@@ -139,7 +139,7 @@ function unauthorized(res: Response, title: string) {
 }
 
 // Initial frame view
-app.get("/", (_req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
 	const html = frameMeta({
 		title: "Rock Paper Scissors",
 		image: publicUrl("/images/start.png"),
@@ -150,7 +150,7 @@ app.get("/", (_req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
-		pageUrl: publicUrl("/"),
+		pageUrl: publicUrl(req.originalUrl || "/"),
 	});
 	res.set("Content-Type", "text/html").send(html);
 });
@@ -172,7 +172,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/bot"),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -195,7 +195,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl(`/pvp?matchId=${matchId}`),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -209,7 +209,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/action"),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -225,7 +225,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/connect"),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -241,7 +241,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
-		pageUrl: publicUrl("/"),
+		pageUrl: publicUrl(req.originalUrl || "/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -263,7 +263,7 @@ app.post("/bot", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/bot"),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -281,7 +281,7 @@ app.post("/bot", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
-		pageUrl: publicUrl("/"),
+		pageUrl: publicUrl(req.originalUrl || "/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -297,7 +297,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 			image: publicUrl("/images/error.png"),
 			buttons: [{ label: "Home" }],
 			postUrl: publicUrl("/action"),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -326,7 +326,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Cancel" }
 			],
 			postUrl: publicUrl(`/pvp?matchId=${matchId}`),
-			pageUrl: publicUrl("/"),
+			pageUrl: publicUrl(req.originalUrl || "/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -347,7 +347,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
-		pageUrl: publicUrl("/"),
+		pageUrl: publicUrl(req.originalUrl || "/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -363,7 +363,7 @@ app.post("/connect", verifyFrameAction, (req: Request, res: Response) => {
 			{ label: "Back" }
 		],
 		postUrl: publicUrl("/action"),
-		pageUrl: publicUrl("/"),
+		pageUrl: publicUrl(req.originalUrl || "/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
