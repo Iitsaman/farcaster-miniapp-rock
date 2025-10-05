@@ -53,6 +53,7 @@ function frameMeta({ title, image, buttons, postUrl }: { title: string; image: s
 	<meta property="fc:frame" content="vNext" />
 	<meta property="og:title" content="${title}" />
 	<meta property="og:image" content="${image}" />
+	<meta property="fc:frame:image" content="${image}" />
 	${buttons
 		.map((btn, idx) => {
 			const i = idx + 1;
@@ -67,8 +68,10 @@ function frameMeta({ title, image, buttons, postUrl }: { title: string; image: s
 }
 
 function publicUrl(path: string) {
-	const base = process.env.PUBLIC_URL || `http://localhost:${port}`;
-	return `${base}${path}`;
+	const baseRaw = process.env.PUBLIC_URL || `http://localhost:${port}`;
+	const base = baseRaw.replace(/\/+$/, "");
+	const p = path.startsWith("/") ? path : `/${path}`;
+	return `${base}${p}`;
 }
 
 // Neynar verification middleware (SDK v2)
