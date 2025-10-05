@@ -8,6 +8,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use((req, res, next) => {
+	res.setHeader("Cache-Control", "no-store");
+	next();
+});
+
 app.use(bodyParser.json({ type: ["application/json", "application/x-www-form-urlencoded"] as any }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -48,9 +53,11 @@ function decideWinner(a: Move, b: Move): 0 | 1 | 2 {
 
 type ButtonSpec = { label: string; action?: "post" | "url"; target?: string };
 
-function frameMeta({ title, image, buttons, postUrl }: { title: string; image: string; buttons: ButtonSpec[]; postUrl: string; }) {
+function frameMeta({ title, image, buttons, postUrl, pageUrl }: { title: string; image: string; buttons: ButtonSpec[]; postUrl: string; pageUrl: string; }) {
 	return `<!DOCTYPE html><html><head>
 	<meta property="fc:frame" content="vNext" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="${pageUrl}" />
 	<meta property="og:title" content="${title}" />
 	<meta property="og:image" content="${image}" />
 	<meta property="fc:frame:image" content="${image}" />
@@ -64,7 +71,9 @@ function frameMeta({ title, image, buttons, postUrl }: { title: string; image: s
 		})
 		.join("")}
 	<meta property="fc:frame:post_url" content="${postUrl}" />
-	</head></html>`;
+	</head><body>
+	<script>(function(){try{var w=window;var fc=w.farcaster; if(fc&&fc.actions&&typeof fc.actions.ready==='function'){fc.actions.ready();} else if(w.parent){w.parent.postMessage({type:'ready'}, '*');}}catch(e){}})();</script>
+	</body></html>`;
 }
 
 function publicUrl(path: string) {
@@ -123,7 +132,8 @@ function unauthorized(res: Response, title: string) {
 		title,
 		image: publicUrl("/images/error.png"),
 		buttons: [{ label: "Back" }],
-		postUrl: publicUrl("/")
+		postUrl: publicUrl("/"),
+		pageUrl: publicUrl("/"),
 	});
 	return res.set("Content-Type", "text/html").status(401).send(html);
 }
@@ -140,6 +150,7 @@ app.get("/", (_req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
+		pageUrl: publicUrl("/"),
 	});
 	res.set("Content-Type", "text/html").send(html);
 });
@@ -161,6 +172,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/bot"),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -183,6 +195,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl(`/pvp?matchId=${matchId}`),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -196,6 +209,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/action"),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -211,6 +225,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/connect"),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -226,6 +241,7 @@ app.post("/action", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
+		pageUrl: publicUrl("/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -247,6 +263,7 @@ app.post("/bot", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Back" }
 			],
 			postUrl: publicUrl("/bot"),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -264,6 +281,7 @@ app.post("/bot", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
+		pageUrl: publicUrl("/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -279,6 +297,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 			image: publicUrl("/images/error.png"),
 			buttons: [{ label: "Home" }],
 			postUrl: publicUrl("/action"),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -307,6 +326,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 				{ label: "Cancel" }
 			],
 			postUrl: publicUrl(`/pvp?matchId=${matchId}`),
+			pageUrl: publicUrl("/"),
 		});
 		return res.set("Content-Type", "text/html").send(html);
 	}
@@ -327,6 +347,7 @@ app.post("/pvp", verifyFrameAction, async (req: Request, res: Response) => {
 			{ label: "Connect Wallet" }
 		],
 		postUrl: publicUrl("/action"),
+		pageUrl: publicUrl("/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
@@ -342,6 +363,7 @@ app.post("/connect", verifyFrameAction, (req: Request, res: Response) => {
 			{ label: "Back" }
 		],
 		postUrl: publicUrl("/action"),
+		pageUrl: publicUrl("/"),
 	});
 	return res.set("Content-Type", "text/html").send(html);
 });
