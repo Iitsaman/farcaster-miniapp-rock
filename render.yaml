@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: farcaster-rps-frame
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NEYNAR_API_KEY
+        sync: false
+      - key: PUBLIC_URL
+        sync: false
+      - key: BASE_CONNECT_URL
+        value: https://wallet.coinbase.com/
+      - key: ARB_CONNECT_URL
+        value: https://portal.arbitrum.io/

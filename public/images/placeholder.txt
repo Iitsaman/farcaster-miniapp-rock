@@ -1,0 +1,1 @@
+Place PNGs here: start.png, choose.png, lobby.png, howto.png, connect.png, result.png

@@ -1,0 +1,26 @@
+{
+  "name": "farcaster-rps-frame",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p .",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "zod": "^3.23.8",
+    "@neynar/nodejs-sdk": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.1",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.4.5"
+  }
+}
